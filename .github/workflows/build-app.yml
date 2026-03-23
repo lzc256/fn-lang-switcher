@@ -1,0 +1,33 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Make script executable
+        run: chmod +x build-app.sh
+
+      - name: Run build script
+        run: ./build-app.sh
+
+      - name: Compress App
+        run: |
+          cd .build
+          ditto -c -k --sequesterRsrc FnLangSwitch.app FnLangSwitch.zip
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: FnLangSwitch-Binary
+          path: .build/FnLangSwitch.zip
