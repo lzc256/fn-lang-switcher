@@ -19,7 +19,7 @@ cp ".build/release/$APP_NAME" "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
 cp "Sources/$APP_NAME/Info.plist" "$APP_BUNDLE/Contents/Info.plist"
 
 # Generate icon
-cat > /tmp/gen_icon.swift << 'EOF'
+cat >/tmp/gen_icon.swift <<'EOF'
 import AppKit
 let size = 1024
 let image = NSImage(size: NSSize(width: size, height: size))
@@ -50,10 +50,10 @@ ICONSET="/tmp/$APP_NAME.iconset"
 rm -rf "$ICONSET"
 mkdir -p "$ICONSET"
 for s in 16 32 64 128 256 512 1024; do
-    sips -z $s $s /tmp/fnlangswitch_icon.png --out "$ICONSET/icon_${s}x${s}.png" > /dev/null 2>&1
+	sips -z $s $s /tmp/fnlangswitch_icon.png --out "$ICONSET/icon_${s}x${s}.png" >/dev/null 2>&1
 done
-cp "$ICONSET/icon_32x32.png"   "$ICONSET/icon_16x16@2x.png"
-cp "$ICONSET/icon_64x64.png"   "$ICONSET/icon_32x32@2x.png"
+cp "$ICONSET/icon_32x32.png" "$ICONSET/icon_16x16@2x.png"
+cp "$ICONSET/icon_64x64.png" "$ICONSET/icon_32x32@2x.png"
 cp "$ICONSET/icon_256x256.png" "$ICONSET/icon_128x128@2x.png"
 cp "$ICONSET/icon_512x512.png" "$ICONSET/icon_256x256@2x.png"
 cp "$ICONSET/icon_1024x1024.png" "$ICONSET/icon_512x512@2x.png"
@@ -65,6 +65,7 @@ rm -rf "$ICONSET" /tmp/fnlangswitch_icon.png /tmp/gen_icon.swift
 
 # Ad-hoc sign
 codesign --force --sign - "$APP_BUNDLE"
+xattr -cr "$APP_BUNDLE"
 
 echo ""
 echo "Built: $APP_BUNDLE"
